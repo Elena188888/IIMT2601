@@ -1,0 +1,3 @@
+/* siplog: only styles within this feature. Prefix new rules with #screen-siplog. */
+
+    #sip-calendar .card { border-color:#D6B78625; }
