@@ -1,30 +1,63 @@
-# Siply · 鸡尾酒背景与逐题动画版
+# Siply · 小组分工版
 
-本包包含：
-- index.html：最新版完整网页，包含暖光鸡尾酒背景和 AI Discovery 四步动画问答。
-- .nojekyll：静态发布辅助文件。
-- README.md：本说明。
+这一版把原来的单文件网页拆开，保留鸡尾酒照片背景、AI Discovery 四步动画、社区、饮酒记录、个人页及其他演示功能。
 
-## 已有 GitHub 项目时
+## 先由组长做一次
 
-1. 先解压本压缩包，不要把 ZIP 本身上传到仓库。
-2. 在 GitHub 切换到你准备修改的分支。
-3. 上传本包的 index.html，替换该分支根目录里的同名文件。
-4. 文件名保持 index.html，不要使用 index (1).html 或把它放进另一层文件夹。
-5. 提交更改。若在自己的分支上修改，检查 Pull request 的差异后再合并到 main。
+1. 解压 `Siply-Team.zip`。
+2. 将解压出的 `index.html`、`features`、`shared`、`assets` 文件夹和本说明上传到仓库根目录，保留目录结构。替换原来的 `index.html`。
+3. 先在一个分支检查，再合并到 `main`。不要只上传首页，也不要把 ZIP 本身上传到仓库。
+4. 等网站更新后，让所有组员从这个最新的 `main` 各自创建分支。
 
-本次无需重复上传 README.md 或 .nojekyll；它们是完整项目包的辅助资料。
+已经从 main 根目录发布 GitHub Pages 的项目，可以继续使用原来的 Pages 配置和网址。
 
-## 新建项目时
+## 每个人只管自己的两个文件
 
-将本包中的文件上传到仓库根目录，再在仓库 Settings → Pages 中配置发布来源。
+| 负责板块 | 可以修改的文件 |
+| --- | --- |
+| AI Discovery | `features/discovery.js` 和 `features/discovery.css` |
+| Community | `features/community.js` 和 `features/community.css` |
+| Sip Log | `features/siplog.js` 和 `features/siplog.css` |
+| Surprise Me | `features/surprise.js` 和 `features/surprise.css` |
+| Profile | `features/profile.js` 和 `features/profile.css` |
+| 商家端 | `features/bar.js` 和 `features/bar.css` |
+| 公共部分（组长） | `index.html`、`shared/`、`assets/` |
 
-## 本版更新
+每个 `.js` 文件的最上方是对应板块的页面模板，往下是功能代码；`.css` 文件是对应板块的外观样式。有些样式文件暂时只有说明，因为当前该板块使用公共样式，后续可以在自己的 CSS 文件中补充样式。
 
-- 背景照片已直接内嵌在 HTML 中，不用另传图片文件。
-- AI Discovery 顺序为心情、场景、口味、预算，包含进度条、淡入滑动动画和返回保留选择。
-- 保留原有社区、饮酒记录、个人页及底部导航。
-- 字体、在线样式运行库、图标及酒品图片仍需联网加载。
-- 这是前端交互原型，演示数据保存在各自浏览器，不会自动在组员之间同步。
+新增样式要限定范围：Community 的选择器以 `#screen-community` 开头；AI Discovery 以 `#screen-discovery` 开头。不要在自己的样式文件里直接修改 body、所有 button 或全局颜色变量，否则仍可能影响其他板块。
 
-如已有组员的新改动，请先比较差异，避免用完整文件覆盖其他人的新内容。
+页面模板使用 JavaScript 的反引号字符串。如果手写其中的反引号或 `${...}`，需要正确转义；保留已有元素 ID 和事件函数名。可以让 AI 帮忙处理，但只给它你负责的两个文件。
+
+## 一个实际例子
+
+你负责 AI Discovery：
+
+1. 切换到你的 `discovery` 分支。
+2. 下载该分支的 `features/discovery.js` 和 `features/discovery.css`。
+3. 让 AI 修改这两个文件，例如：“只改 AI Discovery 的题目和动画，保留元素 ID、函数名与共享接口，返回完整的这两个文件，不改其他文件。”
+4. 打开仓库的 `features` 文件夹，在这里上传这两个同名文件并提交。不要上传到根目录，不用重新上传 index.html。
+5. 发起 Pull request 到 main，检查 Files changed 里只包含自己准备修改的文件，再由组长合并。
+
+另一位同学同时修改 Community：只处理 `community.js` 和 `community.css`，按同样的方法上传到 `features` 文件夹。他的文件与 AI Discovery 不同，通常不会互相覆盖。
+
+新一轮任务从最新 main 创建新分支。不要重复上传第一次下载的整套项目。
+
+## 公共内容由组长协调
+
+- 修改背景照片：`assets/cocktail-background.jpg`。
+- 公共字体、手机框、导航外观：`shared/styles.css`。
+- 酒单、酒吧、图片链接：`shared/data.js`。
+- 登录、路由、共享数据和通用提示：`shared/app.js`。
+- 启动流程：`shared/init.js`。
+- 导航按钮、公共弹窗和脚本加载顺序：`index.html`。
+
+共享数据仍由 `state`、`saveState()`、`go()` 等既有接口提供。需要更改这些接口、全局变量名或共同使用的元素 ID 时，由组长统一处理；模块拆开可以减少冲突，但不意味着共享功能可以随意更改。
+
+## 运行与验证
+
+直接通过现有 GitHub Pages 网页访问，无需安装依赖或构建。普通浏览器打开 index.html 也可演示；开发时可使用编辑器的静态预览功能。在线字体、图标、样式运行库与部分酒品图片仍需要联网。
+
+普通访问先显示演示登录；网址后加 `?demo=1` 可直接进入首页。本项目仍是前端原型，数据保存于本机浏览器，并非组员共享数据库。
+
+拆分后已检查脚本语法、文件引用、元素 ID、事件函数及逐题问答流程。当前预览服务不可用，拆分版尚未进行真实手机显示复核；请组长首次替换后用手机检查底部导航、动画和各板块切换。
