@@ -1,45 +1,30 @@
-# Siply · Curated Cocktails
+# Siply · 鸡尾酒背景与逐题动画版
 
-手机鸡尾酒推荐交互原型。采用深酒棕与香槟金视觉，包含 AI Discovery、Surprise Me、Sip Log、Community 及个人页，已修复底部导航被裁切的问题。
+本包包含：
+- index.html：最新版完整网页，包含暖光鸡尾酒背景和 AI Discovery 四步动画问答。
+- .nojekyll：静态发布辅助文件。
+- README.md：本说明。
 
-## 文件
+## 已有 GitHub 项目时
 
-| 文件 | 用途 |
-| --- | --- |
-| `index.html` | 完整页面，包含样式和交互代码 |
-| `.nojekyll` | 让 GitHub Pages 按静态文件发布 |
-| `README.md` | 项目说明与发布步骤 |
+1. 先解压本压缩包，不要把 ZIP 本身上传到仓库。
+2. 在 GitHub 切换到你准备修改的分支。
+3. 上传本包的 index.html，替换该分支根目录里的同名文件。
+4. 文件名保持 index.html，不要使用 index (1).html 或把它放进另一层文件夹。
+5. 提交更改。若在自己的分支上修改，检查 Pull request 的差异后再合并到 main。
 
-不需要安装 Node.js，不需要 npm，不需要构建。
+本次无需重复上传 README.md 或 .nojekyll；它们是完整项目包的辅助资料。
 
-## 上传 GitHub
+## 新建项目时
 
-1. 新建一个仓库，名称可以使用 `siply-app`。使用免费账号发布时，选择 Public（公开仓库）。
-2. 在电脑或手机上解压 `Siply-GitHub.zip`。
-3. 在仓库中选择 **Add file → Upload files**，上传解压出的文件，然后点击 **Commit changes** 保存。如果是空仓库，可以点击页面上的 **uploading an existing file**。
-4. 确保 `index.html` 位于仓库最外层，不要再嵌套一层文件夹。
+将本包中的文件上传到仓库根目录，再在仓库 Settings → Pages 中配置发布来源。
 
-**不要只上传 ZIP 压缩包**，GitHub Pages 需要能直接找到 `index.html`。如果设备的文件选择器不显示 `.nojekyll`，先上传 `index.html` 和 `README.md` 也可以；本项目没有需要特殊处理的下划线资源目录。
+## 本版更新
 
-## 发布为可访问的网页
+- 背景照片已直接内嵌在 HTML 中，不用另传图片文件。
+- AI Discovery 顺序为心情、场景、口味、预算，包含进度条、淡入滑动动画和返回保留选择。
+- 保留原有社区、饮酒记录、个人页及底部导航。
+- 字体、在线样式运行库、图标及酒品图片仍需联网加载。
+- 这是前端交互原型，演示数据保存在各自浏览器，不会自动在组员之间同步。
 
-1. 进入仓库的 **Settings → Pages**。
-2. 在 **Build and deployment** 中将 **Source** 设为 **Deploy from a branch**。
-3. 选择包含文件的分支，通常为 **main**；目录选择 **/(root)**，点击 **Save**。
-4. 等待部署完成，在 Pages 页面点击 **Visit site** 打开网页。把该网页链接发给小组成员即可演示。
-
-如果分支名称不是 main，选择实际上传文件的分支。
-
-## 演示与维护
-
-- 正常打开网页会显示登录入口；这是演示登录，可使用虚构信息，验证码会自动填入。
-- 如需直接进入首页，可在网页地址末尾加 `?demo=1`。
-- 页面使用浏览器 localStorage 保存演示数据；不同设备的数据不会自动同步。
-- 字体、样式运行库、图标及酒品图片来自在线资源，使用时需要联网。
-- GitHub Pages 提供此原型的静态网页展示；当前登录、AI 匹配和扫码等为前端演示逻辑，没有连接真实账户、AI 服务或后台数据库。
-- 更新时上传新的 `index.html` 覆盖旧文件并提交；发布完成后刷新网页。
-
-## 官方参考
-
-- [创建 GitHub Pages 站点](https://docs.github.com/en/pages/getting-started-with-github-pages/creating-a-github-pages-site)
-- [配置 GitHub Pages 发布来源](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site)
+如已有组员的新改动，请先比较差异，避免用完整文件覆盖其他人的新内容。
