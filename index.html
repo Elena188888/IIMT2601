@@ -384,6 +384,7 @@
         <div class="px-5 pb-6">
         <!-- AI DISCOVERY -->
         <section id="screen-discovery" class="screen active">
+          <div id="customer-discovery-view">
           <div id="discovery-quiz">
             <div class="discovery-intro">
               <p class="eyebrow">AI Discovery · Siply</p>
@@ -450,6 +451,7 @@
             </div>
             <p id="final-match-msg" class="hidden text-center text-xs text-gold uppercase tracking-widest mt-3">This is your final match.</p>
           </div>
+          </div>
         </section>
 
         <!-- SURPRISE ME -->
@@ -478,11 +480,21 @@
 
         <!-- COMMUNITY -->
         <section id="screen-community" class="screen">
+          <div id="customer-community-view">
           <div class="flex items-center justify-between mb-4">
             <h2 class="font-serif text-2xl">Community</h2>
             <button onclick="openPostForm()" class="pressable w-9 h-9 rounded-full bg-dark text-white flex items-center justify-center"><i data-lucide="plus" class="w-4 h-4"></i></button>
           </div>
           <div id="community-feed" class="space-y-4 pb-4"></div>
+          </div>
+          <div id="bar-community-view" class="hidden">
+            <div class="flex items-center justify-between mb-4">
+              <div><p class="eyebrow mb-1">Partner Bar</p><h2 class="font-serif text-2xl">Community</h2></div>
+              <button onclick="openPostForm()" class="pressable w-9 h-9 rounded-full bg-dark text-white flex items-center justify-center"><i data-lucide="plus" class="w-4 h-4"></i></button>
+            </div>
+            <p class="text-sm text-gray-500 mb-4">Browse customer feedback and share updates from your bar.</p>
+            <div id="bar-community-feed" class="space-y-4 pb-4"></div>
+          </div>
         </section>
 
         <!-- PROFILE -->
@@ -524,17 +536,27 @@
           </div>
           <div id="bar-panel" class="hidden">
             <div class="flex rounded-full bg-white border border-sand p-1 mb-4">
-              <button onclick="setBarTab('upload')" data-btab="upload" class="bar-tab flex-1 py-2 rounded-full text-[10px] font-medium uppercase tracking-wider bg-dark text-white">Upload</button>
-              <button onclick="setBarTab('promo')" data-btab="promo" class="bar-tab flex-1 py-2 rounded-full text-[10px] font-medium uppercase tracking-wider text-gray-500">Promo</button>
+              <button onclick="setBarTab('upload')" data-btab="upload" class="bar-tab flex-1 py-2 rounded-full text-[10px] font-medium uppercase tracking-wider bg-dark text-white">Drinks</button>
+              <button onclick="setBarTab('promo')" data-btab="promo" class="bar-tab flex-1 py-2 rounded-full text-[10px] font-medium uppercase tracking-wider text-gray-500">Promotions</button>
               <button onclick="setBarTab('scan')" data-btab="scan" class="bar-tab flex-1 py-2 rounded-full text-[10px] font-medium uppercase tracking-wider text-gray-500">Scan</button>
             </div>
             <div id="bar-tab-upload" class="bar-panel">
-              <div class="card p-4 mb-3">
+              <div class="flex items-center justify-between mb-3"><h3 class="font-serif text-xl">Your drinks</h3><button onclick="toggleBarDrinkForm()" class="pressable btn-primary text-[10px] uppercase tracking-widest px-4 py-2">Add New Drink</button></div>
+              <div id="bar-drink-list" class="space-y-3 mb-4"></div>
+              <div id="bar-add-form" class="card p-4 mb-3 hidden">
+                <p class="eyebrow mb-2">New listing</p>
                 <input id="bar-drink-name" type="text" placeholder="Drink name" class="w-full rounded-2xl border border-sand bg-white px-4 py-3 mb-3 outline-none" />
-                <input id="bar-drink-bar" type="text" placeholder="Bar name" class="w-full rounded-2xl border border-sand bg-white px-4 py-3 mb-3 outline-none" />
+                <input id="bar-drink-image" type="url" placeholder="Drink image URL (optional)" class="w-full rounded-2xl border border-sand bg-white px-4 py-3 mb-3 outline-none" />
                 <input id="bar-drink-price" type="number" placeholder="Price HKD" class="w-full rounded-2xl border border-sand bg-white px-4 py-3 mb-3 outline-none" />
-                <textarea id="bar-drink-desc" rows="2" placeholder="Description / tags" class="w-full rounded-2xl border border-sand bg-white px-4 py-3 mb-4 outline-none text-sm"></textarea>
-                <button onclick="barUpload()" class="pressable w-full btn-primary text-sm uppercase tracking-widest">Submit for review</button>
+                <textarea id="bar-drink-desc" rows="2" placeholder="Short description" class="w-full rounded-2xl border border-sand bg-white px-4 py-3 mb-3 outline-none text-sm"></textarea>
+                <input id="bar-drink-flavour" type="text" placeholder="Flavour tags, e.g. citrus, herbal" class="w-full rounded-2xl border border-sand bg-white px-4 py-3 mb-3 outline-none" />
+                <input id="bar-drink-mood" type="text" placeholder="Mood tags, e.g. relaxed, bold" class="w-full rounded-2xl border border-sand bg-white px-4 py-3 mb-3 outline-none" />
+                <input id="bar-drink-occasion" type="text" placeholder="Occasion tags, e.g. date night, friends" class="w-full rounded-2xl border border-sand bg-white px-4 py-3 mb-3 outline-none" />
+                <select id="bar-drink-category" class="w-full rounded-2xl border border-sand bg-white px-4 py-3 mb-4 outline-none"><option value="Alcoholic">Alcoholic</option><option value="Non-alcoholic">Non-alcoholic</option></select>
+                <button onclick="barUpload()" class="pressable w-full btn-primary text-sm uppercase tracking-widest">Save drink</button>
+              </div>
+              <div class="card p-4 mb-3">
+                <p class="text-xs text-gray-500">New drinks appear here after saving and are available to customer-facing discovery once listed.</p>
               </div>
               <div id="bar-pending" class="space-y-2"></div>
             </div>
@@ -562,21 +584,25 @@
 
       <!-- Bottom nav -->
       <nav class="flex-shrink-0 bg-white/95 backdrop-blur border-t border-sand/60 px-2 py-2 flex justify-between items-center z-40">
-        <button onclick="go('discovery')" data-nav="discovery" class="nav-item active flex flex-col items-center gap-0.5 py-1 flex-1 pressable">
+        <button id="nav-discovery" onclick="go('discovery')" data-nav="discovery" class="nav-item active flex flex-col items-center gap-0.5 py-1 flex-1 pressable">
           <i data-lucide="sparkles" class="w-5 h-5"></i>
           <span class="text-[9px] tracking-wide">AI Discovery</span>
         </button>
-        <button onclick="go('surprise')" data-nav="surprise" class="nav-item flex flex-col items-center gap-0.5 py-1 flex-1 pressable">
+        <button id="nav-surprise" onclick="go('surprise')" data-nav="surprise" class="nav-item flex flex-col items-center gap-0.5 py-1 flex-1 pressable">
           <i data-lucide="dices" class="w-5 h-5"></i>
           <span class="text-[9px] tracking-wide">Surprise Me</span>
         </button>
-        <button onclick="go('siplog')" data-nav="siplog" class="nav-item flex flex-col items-center gap-0.5 py-1 flex-1 pressable">
+        <button id="nav-siplog" onclick="go('siplog')" data-nav="siplog" class="nav-item flex flex-col items-center gap-0.5 py-1 flex-1 pressable">
           <i data-lucide="calendar-heart" class="w-5 h-5"></i>
           <span class="text-[9px] tracking-wide">Sip Log</span>
         </button>
         <button onclick="go('community')" data-nav="community" class="nav-item flex flex-col items-center gap-0.5 py-1 flex-1 pressable">
           <i data-lucide="users" class="w-5 h-5"></i>
           <span class="text-[9px] tracking-wide">Community</span>
+        </button>
+        <button id="nav-bar-dashboard" onclick="go('bar-dashboard')" data-nav="bar-dashboard" class="nav-item hidden flex flex-col items-center gap-0.5 py-1 flex-1 pressable">
+          <i data-lucide="store" class="w-5 h-5"></i>
+          <span class="text-[9px] tracking-wide">Dashboard</span>
         </button>
       </nav>
     </div>
@@ -598,21 +624,24 @@
       <div class="absolute inset-0 bg-black/40" onclick="closePostForm()"></div>
       <div class="relative bg-cream rounded-t-[32px] w-full max-h-[85%] overflow-y-auto hide-scrollbar p-5 pb-8 animate-[slideUp_.3s_ease]">
         <button onclick="closePostForm()" class="absolute top-3 right-3 w-8 h-8 rounded-full bg-white border border-sand flex items-center justify-center pressable"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
-        <p class="eyebrow mb-2">New Post</p>
-        <h3 class="font-serif text-xl mb-4">Share a drink</h3>
-        <label class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2 block">Drink</label>
+        <p id="post-form-eyebrow" class="eyebrow mb-2">New Post</p>
+        <h3 id="post-form-title" class="font-serif text-xl mb-4">Share a drink</h3>
+        <div id="post-title-wrap" class="hidden"><label class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2 block">Post title</label><input id="post-title" type="text" class="w-full rounded-2xl border border-sand bg-white px-4 py-3 mb-3 outline-none" placeholder="New menu or event" /></div>
+        <label class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2 block">Drink <span id="post-drink-optional" class="normal-case text-gray-400"></span></label>
         <select id="post-drink" class="w-full rounded-2xl border border-sand bg-white px-4 py-3 mb-3 outline-none"></select>
-        <label class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2 block">Rating</label>
+        <div id="post-stars-wrap"><label class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2 block">Rating</label>
         <div id="post-stars" class="flex gap-1 mb-3" data-rating="0">
           <button onclick="setPostStar(1)" class="star text-2xl text-gray-300">★</button>
           <button onclick="setPostStar(2)" class="star text-2xl text-gray-300">★</button>
           <button onclick="setPostStar(3)" class="star text-2xl text-gray-300">★</button>
           <button onclick="setPostStar(4)" class="star text-2xl text-gray-300">★</button>
           <button onclick="setPostStar(5)" class="star text-2xl text-gray-300">★</button>
-        </div>
+        </div></div>
         <label class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2 block">Photo</label>
         <input id="post-photo" type="file" accept="image/*" class="w-full text-xs mb-3" />
-        <label class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2 block">Review</label>
+        <div id="post-label-wrap" class="hidden"><label class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2 block">Label</label><select id="post-label" class="w-full rounded-2xl border border-sand bg-white px-4 py-3 mb-3 outline-none"><option value="">No label</option><option>New Arrival</option><option>Signature Cocktail</option><option>Seasonal Special</option><option>Limited Edition</option></select></div>
+        <div id="post-perk-wrap" class="hidden"><label class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2 block">Optional perk</label><select id="post-perk" class="w-full rounded-2xl border border-sand bg-white px-4 py-3 mb-3 outline-none"><option value="">No perk</option><option>Complimentary topping</option><option>Free drink upgrade</option><option>Special tasting invitation</option></select></div>
+        <label id="post-note-label" class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2 block">Review</label>
         <textarea id="post-note" rows="3" class="w-full rounded-2xl border border-sand bg-white px-4 py-3 mb-5 outline-none text-sm" placeholder="Taste notes..."></textarea>
         <button onclick="submitPost()" class="pressable w-full btn-primary text-sm uppercase tracking-widest">Publish</button>
       </div>
@@ -772,21 +801,35 @@
         const date = addDays(today, -i);
         sipLog.push({date, drinkId:drink.id, barId:bar.id, price:drink.price});
       }
-      return { posts, sipLog, points:680, wishlist:[], savedQrs:[], pendingDrinks:[], promos:[], user:{name:'Alex'}, surpriseUsed:null, barLoggedIn:false };
+      return { posts, barPosts:[], barDrinks:[], barRemovedDrinks:[], sipLog, points:680, wishlist:[], savedQrs:[], pendingDrinks:[], promos:[], user:{name:'Alex'}, role:'user', barId:'bar-velvet', surpriseUsed:null, barLoggedIn:false };
     }
 
     function loadState() {
       const raw = localStorage.getItem('siply-state-v2');
-      if (raw) return JSON.parse(raw);
+      if (raw) {
+        const saved = JSON.parse(raw);
+        saved.barPosts = saved.barPosts || [];
+        saved.barDrinks = saved.barDrinks || [];
+        saved.barRemovedDrinks = saved.barRemovedDrinks || [];
+        hydrateBarDrinks(saved);
+        return saved;
+      }
       const s = generateSampleData();
       s.loggedIn = false;
       return s;
+    }
+    function hydrateBarDrinks(saved){
+      const bar = bars.find(b=>b.id === (saved.barId || 'bar-velvet')) || bars[0];
+      (saved.barDrinks || []).filter(d=>!bar.drinks.some(existing=>existing.id===d.id)).forEach(d=>bar.drinks.push(d));
+      const removed = new Set(saved.barRemovedDrinks || []);
+      bar.drinks = bar.drinks.filter(d=>!removed.has(d.id));
     }
     function saveState(){ localStorage.setItem('siply-state-v2', JSON.stringify(state)); }
 
     // ===== INIT =====
     document.addEventListener('DOMContentLoaded', () => {
       if (location.search.includes('demo=1')) { state.loggedIn = true; saveState(); }
+      if (state.role === 'bar') currentRole = 'bar';
       renderStaticChips();
       if (state.loggedIn) startApp();
       else go('login');
@@ -799,7 +842,7 @@
       const main = document.getElementById('main-app');
       main.classList.remove('hidden');
       main.classList.add('flex');
-      go('discovery');
+      go(currentRole === 'bar' ? 'bar-dashboard' : 'discovery');
     }
 
     // ===== LOGIN =====
@@ -822,19 +865,24 @@
       state.loggedIn = true;
       if (!state.user) state.user = {};
       state.user.name = document.getElementById('login-email').value.trim().split('@')[0] || 'Guest';
+      state.role = currentRole;
+      if (currentRole === 'bar') state.barLoggedIn = true;
       saveState();
-      if (currentRole === 'bar') { startApp(); go('bar-dashboard'); showToast('Bar dashboard unlocked'); }
+      if (currentRole === 'bar') { startApp(); showToast('Bar workspace unlocked'); }
       else { startApp(); showToast('Welcome to Siply'); }
     }
 
     // ===== NAVIGATION =====
     function go(screen){
+      if (currentRole === 'bar' && screen === 'discovery') screen = 'bar-dashboard';
+      if (currentRole === 'bar' && (screen === 'surprise' || screen === 'siplog')) screen = 'bar-dashboard';
       if(screen!=='discovery') resetQuizMotion();
       if (screen !== 'drink-detail') previousScreen = currentScreen;
       currentScreen = screen;
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
       const el = document.getElementById('screen-' + screen);
       if (el) el.classList.add('active');
+      updateRoleNavigation();
       document.querySelectorAll('[data-nav]').forEach(n => n.classList.toggle('active', n.dataset.nav === screen));
       if (screen === 'discovery') renderDiscovery();
       if (screen === 'surprise') renderSurprise();
@@ -847,6 +895,15 @@
         : el && el.querySelector('.screen-scroll');
       if (scroller) scroller.scrollTop = 0;
       setTimeout(()=>lucide.createIcons(), 10);
+    }
+
+    function updateRoleNavigation(){
+      const isBar = currentRole === 'bar';
+      document.getElementById('nav-discovery').classList.toggle('hidden', isBar);
+      document.getElementById('nav-surprise').classList.toggle('hidden', isBar);
+      document.getElementById('nav-siplog').classList.toggle('hidden', isBar);
+      document.getElementById('nav-bar-dashboard').classList.toggle('hidden', !isBar);
+      document.querySelectorAll('[data-nav="discovery"],[data-nav="community"],[data-nav="bar-dashboard"]').forEach(n=>n.classList.toggle('active', n.dataset.nav === currentScreen));
     }
 
     // ===== CHIPS =====
@@ -934,6 +991,7 @@
       startDiscoveryAnimation();
     }
     function renderDiscovery(){
+      document.getElementById('customer-discovery-view').classList.remove('hidden');
       document.getElementById('discovery-quiz').classList.remove('hidden');
       document.getElementById('discovery-result').classList.add('hidden');
       document.getElementById('discovery-flipper').classList.remove('flipped');
@@ -943,6 +1001,7 @@
       clearBudgetError();
       updateQuizStep();
     }
+    function getActiveBar(){ return findBar(state.barId || 'bar-velvet'); }
     function backToDiscoveryQuiz(){ renderDiscovery(); }
     function getDiscoveryInputs(){
       const moods = Array.from(document.querySelectorAll('#disc-moods .active')).map(b=>b.textContent);
@@ -1504,13 +1563,26 @@
 
     // ===== COMMUNITY =====
     function renderCommunity(){
+      if (currentRole === 'bar') { renderBarCommunity(); return; }
+      document.getElementById('customer-community-view').classList.remove('hidden');
+      document.getElementById('bar-community-view').classList.add('hidden');
       const select = document.getElementById('post-drink');
       select.innerHTML = bars.flatMap(b=>b.drinks.map(d=>`<option value="${d.id}" data-bar="${b.id}">${d.name} @ ${b.name}</option>`)).join('');
       document.getElementById('community-feed').innerHTML = state.posts.slice().sort((a,b)=>new Date(b.date)-new Date(a.date)).map(p=>postCard(p)).join('');
       setTimeout(()=>lucide.createIcons(), 10);
     }
+    function renderBarCommunity(){
+      document.getElementById('customer-community-view').classList.add('hidden');
+      document.getElementById('bar-community-view').classList.remove('hidden');
+      const select = document.getElementById('post-drink');
+      select.innerHTML = `<option value="" data-bar="${state.barId || 'bar-velvet'}">No specific drink</option>` + getActiveBarDrinks().map(d=>`<option value="${d.id}" data-bar="${state.barId || 'bar-velvet'}">${d.name}</option>`).join('');
+      document.getElementById('bar-community-feed').innerHTML = state.posts.slice().sort((a,b)=>new Date(b.date)-new Date(a.date)).map(p=>postCard(p)).join('');
+      setTimeout(()=>lucide.createIcons(), 10);
+    }
     function postCard(post){
-      const d = findDrink(post.drinkId); const b = findBar(post.barId);
+      const d = post.drinkId ? findDrink(post.drinkId) : findBar(post.barId).drinks[0];
+      const b = findBar(post.barId);
+      const isPromo = post.type === 'bar';
       return `
         <div class="card p-4">
           <div class="flex items-center gap-3 mb-3">
@@ -1525,12 +1597,13 @@
           </div>
           <div class="flex justify-between items-start mb-2">
             <div>
-              <h4 class="font-serif text-xl">${d.name}</h4>
+              <h4 class="font-serif text-xl">${isPromo ? (post.title || 'Bar announcement') : d.name}</h4>
               <p class="text-xs text-gray-400">@ ${b.name}</p>
             </div>
-            <div class="text-gold text-sm">${'★'.repeat(post.rating)}${'☆'.repeat(5-post.rating)}</div>
+            ${isPromo ? `<span class="text-[10px] uppercase tracking-wider text-gold">${post.label || 'Promotion'}</span>` : `<div class="text-gold text-sm">${'★'.repeat(post.rating)}${'☆'.repeat(5-post.rating)}</div>`}
           </div>
           <p class="text-sm text-gray-600 mb-3">${post.note}</p>
+          ${isPromo && post.perk ? `<div class="inline-flex items-center gap-1 rounded-full bg-sand px-3 py-1 text-[10px] uppercase tracking-wider text-dark mb-3">Perk · ${post.perk}</div>` : ''}
           <div class="flex items-center gap-5 text-gray-400 text-xs mb-3">
             <button id="like-btn-${post.id}" onclick="likePost('${post.id}')" class="pressable flex items-center gap-1 ${post.likedByMe?'text-gold':''}">
               <i data-lucide="heart" class="w-4 h-4 ${post.likedByMe?'fill-gold':''}"></i> ${post.likes}
@@ -1555,9 +1628,9 @@
       if (!p) return;
       if (!p.likedByMe){
         p.likedByMe = true; p.likes++;
-        const d = findDrink(p.drinkId);
+        const d = p.drinkId ? findDrink(p.drinkId) : findBar(p.barId).drinks[0];
         flyHeartToProfile(document.getElementById('like-btn-'+id), d);
-        if (!state.wishlist.find(w=>w.drinkId===d.id)) state.wishlist.push({drinkId:d.id, barId:p.barId, savedAt:Date.now()});
+        if (currentRole !== 'bar' && p.drinkId && !state.wishlist.find(w=>w.drinkId===d.id)) state.wishlist.push({drinkId:d.id, barId:p.barId, savedAt:Date.now()});
         saveState();
         showToast('Saved to Want to Try');
       }
@@ -1604,6 +1677,25 @@
       setPostStar(0);
       document.getElementById('post-photo').value='';
       document.getElementById('post-note').value='';
+      document.getElementById('post-title').value='';
+      document.getElementById('post-label').value='';
+      document.getElementById('post-perk').value='';
+      const isBar = currentRole === 'bar';
+      document.getElementById('post-form-eyebrow').textContent = isBar ? 'Partner Bar' : 'New Post';
+      document.getElementById('post-form-title').textContent = isBar ? 'Promote a drink' : 'Share a drink';
+      document.getElementById('post-title-wrap').classList.toggle('hidden', !isBar);
+      document.getElementById('post-stars-wrap').classList.toggle('hidden', isBar);
+      document.getElementById('post-label-wrap').classList.toggle('hidden', !isBar);
+      document.getElementById('post-perk-wrap').classList.toggle('hidden', !isBar);
+      document.getElementById('post-note-label').textContent = isBar ? 'Promotional caption' : 'Review';
+      document.getElementById('post-note').placeholder = isBar ? 'Tell customers what makes this special...' : 'Taste notes...';
+      const select = document.getElementById('post-drink');
+      if (isBar) {
+        select.innerHTML = `<option value="" data-bar="${state.barId || 'bar-velvet'}">No specific drink</option>` + getActiveBarDrinks().map(d=>`<option value="${d.id}" data-bar="${state.barId || 'bar-velvet'}">${d.name}</option>`).join('');
+        const pending = state.pendingPromoteDrinkId;
+        if (pending && getActiveBarDrinks().some(d=>d.id===pending)) select.value = pending;
+        state.pendingPromoteDrinkId = null;
+      }
       document.getElementById('post-modal').classList.remove('hidden');
     }
     function closePostForm(){ document.getElementById('post-modal').classList.add('hidden'); }
@@ -1617,16 +1709,27 @@
     async function submitPost(){
       const select = document.getElementById('post-drink');
       const drinkId = select.value;
-      const barId = select.options[select.selectedIndex].dataset.bar;
-      const rating = +document.getElementById('post-stars').dataset.rating || 5;
+      const barId = select.options[select.selectedIndex]?.dataset.bar || state.barId || 'bar-velvet';
       const note = document.getElementById('post-note').value.trim();
       const file = document.getElementById('post-photo').files[0];
       let photo = null;
       if (file) photo = await new Promise(res=>{ const r=new FileReader(); r.onload=e=>res(e.target.result); r.readAsDataURL(file); });
-      state.posts.unshift({
-        id:'p'+Date.now(), user: state.user?.name || 'You', drinkId, barId, rating, note, photo, likes:0,
-        likedByMe:false, date:new Date().toISOString(), comments:[]
-      });
+      if (!note) return showToast('Add a caption');
+      if (currentRole === 'bar') {
+        const title = document.getElementById('post-title').value.trim();
+        if (!title) return showToast('Add a post title');
+        state.posts.unshift({
+          id:'p'+Date.now(), type:'bar', user:getActiveBar().name, title, label:document.getElementById('post-label').value,
+          perk:document.getElementById('post-perk').value, drinkId, barId, note, photo, likes:0,
+          likedByMe:false, date:new Date().toISOString(), comments:[]
+        });
+      } else {
+        const rating = +document.getElementById('post-stars').dataset.rating || 5;
+        state.posts.unshift({
+          id:'p'+Date.now(), user: state.user?.name || 'You', drinkId, barId, rating, note, photo, likes:0,
+          likedByMe:false, date:new Date().toISOString(), comments:[]
+        });
+      }
       saveState();
       closePostForm();
       renderCommunity();
@@ -1733,24 +1836,73 @@
       document.getElementById('bar-login').classList.toggle('hidden', state.barLoggedIn);
       document.getElementById('bar-panel').classList.toggle('hidden', !state.barLoggedIn);
       if (!state.barLoggedIn) return;
+      renderBarDrinkList();
       document.getElementById('bar-pending').innerHTML = state.pendingDrinks.length ? state.pendingDrinks.map(d=>`
         <div class="card p-3 text-sm"><p class="font-medium">${d.name}</p><p class="text-xs text-gray-400">${d.bar} · ${d.status}</p></div>
       `).join('') : '<p class="text-sm text-gray-400">No pending drinks.</p>';
       const sel = document.getElementById('bar-promo-drink');
-      sel.innerHTML = bars.flatMap(b=>b.drinks.map(d=>`<option value="${d.id}">${d.name} (${b.name})</option>`)).join('');
+      sel.innerHTML = getActiveBarDrinks().map(d=>`<option value="${d.id}">${d.name}</option>`).join('');
       document.getElementById('bar-promo-list').innerHTML = state.promos.length ? state.promos.map(p=>{
         const d = findDrink(p.drinkId);
         return `<div class="card p-3 text-sm"><p class="font-medium">${d.name}</p><p class="text-xs text-gray-400">Promo HK$${p.price} · ${p.date}</p></div>`;
       }).join('') : '<p class="text-sm text-gray-400">No active promos.</p>';
     }
+    function getActiveBarDrinks(){ return getActiveBar().drinks; }
+    function renderBarDrinkList(){
+      const list = document.getElementById('bar-drink-list');
+      if (!list) return;
+      list.innerHTML = getActiveBarDrinks().map(d=>`
+        <div class="card p-3 flex gap-3 items-center">
+          <img src="${d.image || imgUrl(d.prompt)}" class="w-16 h-16 rounded-xl object-cover bg-sand" onerror="this.src='https://placehold.co/160x160/EBE4D6/1F1F1F?text=${encodeURIComponent(d.name)}'" />
+          <div class="flex-1 min-w-0"><div class="flex items-start justify-between gap-2"><p class="font-medium text-sm truncate">${d.name}</p><span class="text-[10px] text-green-600 uppercase tracking-wider">${d.status || 'Live'}</span></div><p class="text-xs text-gray-500">HK$${d.price} · ${d.abv || d.category || 'Alcoholic'}</p><p class="text-[11px] text-gray-400 truncate">${d.description || d.ingredients || d.tags.join(' · ')}</p></div>
+          <div class="flex flex-col gap-1"><button onclick="editBarDrink('${d.id}')" class="pressable text-[10px] text-gold uppercase tracking-wider">Edit</button><button onclick="removeBarDrink('${d.id}')" class="pressable text-[10px] text-gray-400 uppercase tracking-wider">Remove</button><button onclick="promoteDrink('${d.id}')" class="pressable text-[10px] text-dark uppercase tracking-wider">Promote</button></div>
+        </div>`).join('');
+    }
+    function toggleBarDrinkForm(show=true){ document.getElementById('bar-add-form').classList.toggle('hidden', !show); }
+    function editBarDrink(id){
+      const d = getActiveBarDrinks().find(x=>x.id===id); if (!d) return;
+      toggleBarDrinkForm(true);
+      document.getElementById('bar-drink-name').value=d.name;
+      document.getElementById('bar-drink-image').value=d.image || '';
+      document.getElementById('bar-drink-price').value=d.price || '';
+      document.getElementById('bar-drink-desc').value=d.description || d.ingredients || '';
+      document.getElementById('bar-drink-flavour').value=(d.tags || []).join(', ');
+      document.getElementById('bar-drink-mood').value=(d.moods || []).join(', ');
+      document.getElementById('bar-drink-occasion').value=(d.occasions || []).join(', ');
+      document.getElementById('bar-drink-category').value=d.category || d.abv || 'Alcoholic';
+      document.getElementById('bar-add-form').dataset.editingId=id;
+    }
+    function removeBarDrink(id){
+      const d = getActiveBarDrinks().find(x=>x.id===id); if (!d) return;
+      getActiveBar().drinks = getActiveBarDrinks().filter(x=>x.id!==id);
+      state.barRemovedDrinks = state.barRemovedDrinks || [];
+      if (!state.barRemovedDrinks.includes(id)) state.barRemovedDrinks.push(id);
+      state.barDrinks = (state.barDrinks || []).filter(x=>x.id!==id);
+      saveState(); renderBarDashboard(); showToast(`${d.name} removed from your menu`);
+    }
     function barUpload(){
       const name = document.getElementById('bar-drink-name').value.trim();
-      const bar = document.getElementById('bar-drink-bar').value.trim();
+      const image = document.getElementById('bar-drink-image').value.trim();
       const price = document.getElementById('bar-drink-price').value;
       const desc = document.getElementById('bar-drink-desc').value.trim();
-      if (!name || !bar) return showToast('Fill in name and bar');
-      state.pendingDrinks.push({name, bar, price, desc, status:'Pending review'});
-      saveState(); renderBarDashboard(); showToast('Drink submitted for review');
+      const tags = document.getElementById('bar-drink-flavour').value.split(',').map(s=>s.trim()).filter(Boolean);
+      const moods = document.getElementById('bar-drink-mood').value.split(',').map(s=>s.trim()).filter(Boolean);
+      const occasions = document.getElementById('bar-drink-occasion').value.split(',').map(s=>s.trim()).filter(Boolean);
+      const category = document.getElementById('bar-drink-category').value;
+      if (!name || !price || !desc) return showToast('Add a name, price, and description');
+      const editingId = document.getElementById('bar-add-form').dataset.editingId;
+      if (editingId){
+        const d = getActiveBarDrinks().find(x=>x.id===editingId);
+        Object.assign(d,{name,price:Number(price),image,description:desc,tags,moods,occasions,category,abv:category});
+        state.barDrinks = (state.barDrinks || []).map(x=>x.id===editingId ? d : x);
+        delete document.getElementById('bar-add-form').dataset.editingId;
+        saveState(); renderBarDashboard(); toggleBarDrinkForm(false); showToast('Drink updated'); return;
+      }
+      const drink = {id:'bar-drink-'+Date.now(), name, price:Number(price), image, description:desc, ingredients:desc, tags, moods, occasions, category, abv:category, prompt:name, status:'Live'};
+      getActiveBar().drinks.push(drink);
+      state.barDrinks = state.barDrinks || [];
+      state.barDrinks.push({...drink, barId:getActiveBar().id});
+      saveState(); renderBarDashboard(); toggleBarDrinkForm(false); showToast('Drink added to your menu');
     }
     function barPublishPromo(){
       const drinkId = document.getElementById('bar-promo-drink').value;
@@ -1759,6 +1911,12 @@
       if (!price || !date) return showToast('Fill promo details');
       state.promos.push({drinkId, price, date, status:'Live'});
       saveState(); renderBarDashboard(); showToast('Promo published');
+    }
+    function promoteDrink(id){
+      state.pendingPromoteDrinkId = id;
+      saveState();
+      go('community');
+      openPostForm();
     }
     function barScan(){
       const el = document.getElementById('scan-result');
