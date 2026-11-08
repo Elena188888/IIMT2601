@@ -39,6 +39,9 @@
       const raw = localStorage.getItem('siply-state-v2');
       if (raw) {
         const saved = JSON.parse(raw);
+        saved.posts = saved.posts || [];
+        saved.pendingDrinks = saved.pendingDrinks || [];
+        saved.promos = saved.promos || [];
         saved.barPosts = saved.barPosts || [];
         saved.barDrinks = saved.barDrinks || [];
         saved.barRemovedDrinks = saved.barRemovedDrinks || [];

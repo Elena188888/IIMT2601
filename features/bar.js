@@ -10,6 +10,14 @@ document.getElementById('mount-bar').outerHTML = `<section id="screen-bar-dashbo
     <button onclick="barLogin()" class="pressable w-full btn-primary text-sm uppercase tracking-widest">Unlock</button>
   </div>
   <div id="bar-panel" class="hidden">
+    <div id="bar-overview" class="card p-4 mb-4">
+      <p class="eyebrow mb-3">Overview</p>
+      <div class="grid grid-cols-3 gap-2 text-center">
+        <div><span id="bar-overview-drinks" class="block font-serif text-2xl text-dark">0</span><span class="text-[10px] uppercase tracking-wider text-gray-400">Drinks Listed</span></div>
+        <div><span id="bar-overview-promos" class="block font-serif text-2xl text-dark">0</span><span class="text-[10px] uppercase tracking-wider text-gray-400">Active Promotions</span></div>
+        <div><span id="bar-overview-posts" class="block font-serif text-2xl text-dark">0</span><span class="text-[10px] uppercase tracking-wider text-gray-400">Community Posts</span></div>
+      </div>
+    </div>
     <div class="flex rounded-full bg-white border border-sand p-1 mb-4">
       <button onclick="setBarTab('upload')" data-btab="upload" class="bar-tab flex-1 py-2 rounded-full text-[10px] font-medium uppercase tracking-wider bg-dark text-white">Drinks</button>
       <button onclick="setBarTab('promo')" data-btab="promo" class="bar-tab flex-1 py-2 rounded-full text-[10px] font-medium uppercase tracking-wider text-gray-500">Promotions</button>
@@ -35,8 +43,11 @@ document.getElementById('mount-bar').outerHTML = `<section id="screen-bar-dashbo
     </div>
     <div id="bar-tab-promo" class="bar-panel hidden">
       <div class="card p-4 mb-3">
+        <label class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2 block">Select Drink</label>
         <select id="bar-promo-drink" class="w-full rounded-2xl border border-sand bg-white px-4 py-3 mb-3 outline-none"></select>
+        <label class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2 block">Promotional Price (HK$)</label>
         <input id="bar-promo-price" type="number" placeholder="Promo price HKD" class="w-full rounded-2xl border border-sand bg-white px-4 py-3 mb-3 outline-none" />
+        <label class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2 block">Promotion Date</label>
         <input id="bar-promo-date" type="date" class="w-full rounded-2xl border border-sand bg-white px-4 py-3 mb-4 outline-none" />
         <button onclick="barPublishPromo()" class="pressable w-full btn-primary text-sm uppercase tracking-widest">Publish promo</button>
       </div>
@@ -64,9 +75,20 @@ function renderBarDashboard(){
   document.getElementById('bar-panel').classList.toggle('hidden',!state.barLoggedIn);
   if (!state.barLoggedIn) return;
   renderBarDrinkList();
+  renderBarOverview();
   document.getElementById('bar-pending').innerHTML=state.pendingDrinks.length?state.pendingDrinks.map(d=>`<div class="card p-3 text-sm"><p class="font-medium">${d.name}</p><p class="text-xs text-gray-400">${d.bar||getActiveBar().name} · ${d.status}</p></div>`).join(''):'<p class="text-sm text-gray-400">No pending drinks.</p>';
   document.getElementById('bar-promo-drink').innerHTML=getActiveBarDrinks().map(d=>`<option value="${d.id}">${d.name}</option>`).join('');
   document.getElementById('bar-promo-list').innerHTML=state.promos.length?state.promos.map(p=>{const d=findDrink(p.drinkId);return `<div class="card p-3 text-sm"><p class="font-medium">${d.name}</p><p class="text-xs text-gray-400">Promo HK$${p.price} · ${p.date}</p></div>`}).join(''):'<p class="text-sm text-gray-400">No active promos.</p>';
+}
+function isActivePromotion(p){
+  const today=todayStr();
+  return p.status==='Live' && (!p.startDate || p.startDate<=today) && (!p.date || p.date>=today) && (!p.endDate || p.endDate>=today);
+}
+function renderBarOverview(){
+  const barId=state.barId||'bar-velvet';
+  document.getElementById('bar-overview-drinks').textContent=getActiveBarDrinks().length;
+  document.getElementById('bar-overview-promos').textContent=(state.promos||[]).filter(p=>p.barId===barId||(!p.barId&&getActiveBarDrinks().some(d=>d.id===p.drinkId))).filter(isActivePromotion).length;
+  document.getElementById('bar-overview-posts').textContent=(state.posts||[]).filter(p=>p.type==='bar'&&p.barId===barId).length;
 }
 function renderBarDrinkList(){
   const list=document.getElementById('bar-drink-list'); if(!list) return;
@@ -87,7 +109,7 @@ function barUpload(){
   if(editingId){ const d=getActiveBarDrinks().find(x=>x.id===editingId); Object.assign(d,{name,price:Number(price),image,description:desc,ingredients:desc,tags,moods,occasions,category,abv:category}); state.barDrinks=(state.barDrinks||[]).map(x=>x.id===editingId?d:x); delete form.dataset.editingId; saveState(); renderBarDashboard(); toggleBarDrinkForm(false); showToast('Drink updated'); return; }
   const drink={id:'bar-drink-'+Date.now(),name,price:Number(price),image,description:desc,ingredients:desc,tags,moods,occasions,category,abv:category,prompt:name,status:'Live'}; getActiveBar().drinks.push(drink); state.barDrinks=state.barDrinks||[]; state.barDrinks.push({...drink,barId:getActiveBar().id}); saveState(); renderBarDashboard(); toggleBarDrinkForm(false); showToast('Drink added to your menu');
 }
-function barPublishPromo(){ const drinkId=document.getElementById('bar-promo-drink').value, price=document.getElementById('bar-promo-price').value, date=document.getElementById('bar-promo-date').value; if(!price||!date)return showToast('Fill promo details'); state.promos.push({drinkId,price,date,status:'Live'}); saveState(); renderBarDashboard(); showToast('Promo published'); }
+function barPublishPromo(){ const drinkId=document.getElementById('bar-promo-drink').value, price=document.getElementById('bar-promo-price').value, date=document.getElementById('bar-promo-date').value; if(!drinkId||!price||!date)return showToast('Select a drink, price, and date'); state.promos.push({drinkId,price:Number(price),date,status:'Live',barId:state.barId||'bar-velvet'}); saveState(); renderBarDashboard(); showToast('Promo published'); }
 function promoteDrink(id){ state.pendingPromoteDrinkId=id; saveState(); go('community'); openPostForm(); }
 function barScan(){ const el=document.getElementById('scan-result'); el.classList.remove('hidden'); el.textContent='Valid code · Redeemed successfully'; el.className='mt-4 text-sm font-medium text-green-600'; }
 
