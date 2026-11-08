@@ -1,6 +1,7 @@
     // ===== INIT =====
     document.addEventListener('DOMContentLoaded', () => {
       if (location.search.includes('demo=1')) { state.loggedIn = true; saveState(); }
+      if (state.role === 'bar') currentRole = 'bar';
       renderStaticChips();
       if (state.loggedIn) startApp();
       else go('login');
@@ -13,6 +14,6 @@
       const main = document.getElementById('main-app');
       main.classList.remove('hidden');
       main.classList.add('flex');
-      go('discovery');
+      go(currentRole === 'bar' ? 'bar-dashboard' : 'discovery');
     }
 

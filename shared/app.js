@@ -32,17 +32,31 @@
         const date = addDays(today, -i);
         sipLog.push({date, drinkId:drink.id, barId:bar.id, price:drink.price});
       }
-      return { posts, sipLog, points:680, wishlist:[], savedQrs:[], pendingDrinks:[], promos:[], user:{name:'Alex'}, surpriseUsed:null, barLoggedIn:false };
+      return { posts, barPosts:[], barDrinks:[], barRemovedDrinks:[], barProfile:null, sipLog, points:680, wishlist:[], savedQrs:[], pendingDrinks:[], promos:[], user:{name:'Alex'}, role:'user', barId:'bar-velvet', surpriseUsed:null, barLoggedIn:false };
     }
 
     function loadState() {
       const raw = localStorage.getItem('siply-state-v2');
-      if (raw) return JSON.parse(raw);
+      if (raw) {
+        const saved = JSON.parse(raw);
+        saved.barPosts = saved.barPosts || [];
+        saved.barDrinks = saved.barDrinks || [];
+        saved.barRemovedDrinks = saved.barRemovedDrinks || [];
+        saved.barProfile = saved.barProfile || null;
+        hydrateBarDrinks(saved);
+        return saved;
+      }
       const s = generateSampleData();
       s.loggedIn = false;
       return s;
     }
     function saveState(){ localStorage.setItem('siply-state-v2', JSON.stringify(state)); }
+    function hydrateBarDrinks(saved){
+      const bar = bars.find(b=>b.id === (saved.barId || 'bar-velvet')) || bars[0];
+      (saved.barDrinks || []).filter(d=>!bar.drinks.some(existing=>existing.id===d.id)).forEach(d=>bar.drinks.push(d));
+      const removed = new Set(saved.barRemovedDrinks || []);
+      bar.drinks = bar.drinks.filter(d=>!removed.has(d.id));
+    }
 
 
     // ===== LOGIN =====
@@ -65,20 +79,24 @@
       state.loggedIn = true;
       if (!state.user) state.user = {};
       state.user.name = document.getElementById('login-email').value.trim().split('@')[0] || 'Guest';
+      state.role = currentRole;
+      if (currentRole === 'bar') state.barLoggedIn = true;
       saveState();
-      if (currentRole === 'bar') { startApp(); go('bar-dashboard'); showToast('Bar dashboard unlocked'); }
+      if (currentRole === 'bar') { startApp(); showToast('Bar workspace unlocked'); }
       else { startApp(); showToast('Welcome to Siply'); }
     }
 
 
     // ===== NAVIGATION =====
     function go(screen){
+      if (currentRole === 'bar' && (screen === 'discovery' || screen === 'surprise' || screen === 'siplog')) screen = 'bar-dashboard';
       if(screen!=='discovery') resetQuizMotion();
       if (screen !== 'drink-detail') previousScreen = currentScreen;
       currentScreen = screen;
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
       const el = document.getElementById('screen-' + screen);
       if (el) el.classList.add('active');
+      updateRoleNavigation();
       document.querySelectorAll('[data-nav]').forEach(n => n.classList.toggle('active', n.dataset.nav === screen));
       if (screen === 'discovery') renderDiscovery();
       if (screen === 'surprise') renderSurprise();
@@ -91,6 +109,16 @@
         : el && el.querySelector('.screen-scroll');
       if (scroller) scroller.scrollTop = 0;
       setTimeout(()=>lucide.createIcons(), 10);
+    }
+    function updateRoleNavigation(){
+      const isBar = currentRole === 'bar';
+      document.getElementById('nav-discovery').classList.toggle('hidden', isBar);
+      document.getElementById('nav-surprise').classList.toggle('hidden', isBar);
+      document.getElementById('nav-siplog').classList.toggle('hidden', isBar);
+      document.getElementById('nav-bar-dashboard').classList.toggle('hidden', !isBar);
+      document.getElementById('nav-bar-dashboard').style.order = isBar ? '1' : '';
+      document.getElementById('nav-community').style.order = isBar ? '2' : '';
+      document.querySelectorAll('[data-nav="discovery"],[data-nav="community"],[data-nav="bar-dashboard"]').forEach(n=>n.classList.toggle('active', n.dataset.nav === currentScreen));
     }
 
 
